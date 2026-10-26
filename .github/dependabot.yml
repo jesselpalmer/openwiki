@@ -17,6 +17,23 @@ updates:
         update-types:
           - major
 
+  # Keep the copyable CI dependency manifest and lockfile current.
+  - package-ecosystem: npm
+    directory: /examples/openwiki
+    schedule:
+      interval: monthly
+    groups:
+      openwiki:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
