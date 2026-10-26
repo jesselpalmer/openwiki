@@ -1,0 +1,9 @@
+{
+  "name": "openwiki-ci",
+  "private": true,
+  "dependencies": {
+    "jsdom": "30.0.1",
+    "mermaid": "11.17.2",
+    "openwiki": "0.7.2"
+  }
+}

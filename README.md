@@ -219,10 +219,34 @@ OpenWiki checks repository changes and the evidence behind existing Claims to de
 
 Keep it current automatically by adding a scheduled CI job that opens a docs PR whenever the wiki changes:
 
-- **GitHub Actions:** copy [`openwiki-update.yml`](./examples/openwiki-update.yml) into `.github/workflows/openwiki-update.yml`.
+- **GitHub Actions:** copy [`openwiki-update.yml`](./examples/openwiki-update.yml) into `.github/workflows/openwiki-update.yml`, then set up its dependencies as described below.
 - **GitHub Actions with auto-merge:** copy [`openwiki-update-auto-merge.yml`](./examples/openwiki-update-auto-merge.yml) instead, then follow the setup details below.
 - **GitLab CI:** copy [`openwiki-update.gitlab-ci.yml`](./examples/openwiki-update.gitlab-ci.yml) into `.gitlab-ci.yml` or include it from your pipeline.
 - **Bitbucket Pipelines:** copy [`openwiki-update.bitbucket-pipelines.yml`](./examples/openwiki-update.bitbucket-pipelines.yml) into `bitbucket-pipelines.yml`, then schedule the `openwiki-update` pipeline.
+
+For the standard GitHub Actions example:
+
+1. Copy [`examples/openwiki/package.json`](./examples/openwiki/package.json) and
+   [`examples/openwiki/package-lock.json`](./examples/openwiki/package-lock.json)
+   into `.github/openwiki/` in your repository, and commit both files.
+2. Copy [`examples/dependabot.yml`](./examples/dependabot.yml) to
+   `.github/dependabot.yml`. If you already have a Dependabot configuration, append
+   the example's npm entry to its `updates` list instead of replacing the file.
+3. Set the provider, model, and secrets in the workflow for your environment.
+
+The workflow installs the locked dependencies with `npm ci` and runs the local
+OpenWiki executable from the repository root. Dependabot can now propose updates
+to the manifest and lockfile, rather than leaving package versions hidden in a
+shell command. Minor and patch updates are grouped; major updates require manual
+review of OpenWiki's peer dependency ranges. For OpenWiki releases below 1.0,
+also review minor updates for breaking changes.
+
+`mermaid` and `jsdom` provide optional high-fidelity diagram validation. To omit
+them, run `npm uninstall --prefix .github/openwiki mermaid jsdom` and commit both
+updated dependency files. To update dependencies manually, use `npm install
+--prefix .github/openwiki <package>@<version>` and commit both files. Check that
+`mermaid` and `jsdom` satisfy the selected OpenWiki version's peer ranges before
+updating them. The directory's `node_modules/` should be ignored by Git.
 
 <details>
 <summary><b>Auto-merge OpenWiki PRs</b></summary>
